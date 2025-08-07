@@ -32,6 +32,11 @@ public class BluetoothConnectionLE extends BluetoothConnectionBase {
     }
 
     @Override
+    public void connect(String address, int channel) throws IOException {
+        connect(address);
+    }
+
+    @Override
     public void connect(String address, UUID uuid) throws IOException {
         connect(address); // Ignore the uuid, not used
     }

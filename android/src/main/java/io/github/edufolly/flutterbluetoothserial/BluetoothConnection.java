@@ -5,6 +5,8 @@ import java.util.UUID;
 
 public interface BluetoothConnection {
     public boolean isConnected();
+    /// Connects to given device by hardware address, rfcomm chnanel
+    public void connect(String address, int channel) throws IOException;
     /// Connects to given device by hardware address
     public void connect(String address, UUID uuid) throws IOException;
     /// Connects to given device by hardware address (default UUID used)

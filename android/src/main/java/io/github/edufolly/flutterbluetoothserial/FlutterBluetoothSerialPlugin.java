@@ -931,6 +931,8 @@ public class FlutterBluetoothSerialPlugin implements FlutterPlugin, ActivityAwar
 
                     boolean isLE = call.hasArgument("isLE") && Boolean.TRUE.equals(call.<Boolean>argument("isLE"));
 
+                    int channel = call.hasArgument("channel") ? call.argument("channel") : 1;
+
                     String address;
                     try {
                         address = call.argument("address");
@@ -1015,7 +1017,7 @@ public class FlutterBluetoothSerialPlugin implements FlutterPlugin, ActivityAwar
 
                     AsyncTask.execute(() -> {
                         try {
-                            connection.connect(address);
+                            connection.connect(address, channel);
                             activity.runOnUiThread(() -> result.success(id));
                         } catch (Exception ex) {
                             activity.runOnUiThread(() -> result.error("connect_error", ex.getMessage(), exceptionToString(ex)));

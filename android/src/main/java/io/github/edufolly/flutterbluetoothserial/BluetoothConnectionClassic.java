@@ -37,7 +37,7 @@ public class BluetoothConnectionClassic extends BluetoothConnectionBase
     // @TODO . `connect` parameter: timeout
     // @TODO . `connect` other methods than `createRfcommSocketToServiceRecord`, including hidden one raw `createRfcommSocket` (on channel).
     // @TODO ? how about turning it into factoried?
-    public void connect(String address, UUID uuid) throws IOException {
+    public void connect(String address, UUID uuid, int channel) throws IOException {
         if (isConnected()) {
             throw new IOException("already connected");
         }
@@ -60,7 +60,8 @@ public class BluetoothConnectionClassic extends BluetoothConnectionBase
         } catch (IOException e) {
             try {
                 // Newer versions of android may require voodoo; see https://stackoverflow.com/a/25647197
-                socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,1);
+                // RFCommSocket Channel 1 ~ 30, defaultValue is 1
+                socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,channel);
                 socket.connect();
             } catch (Exception e2) {
                 throw new IOException("Failed to connect", e2);
@@ -71,10 +72,18 @@ public class BluetoothConnectionClassic extends BluetoothConnectionBase
         connectionThread.start();
     }
 
-    public void connect(String address) throws IOException {
-        connect(address, DEFAULT_UUID);
+    public void connect(String address, UUID uuid) throws IOException {
+        connect(address, DEFAULT_UUID, 1);
     }
-    
+
+    public void connect(String address) throws IOException {
+        connect(address, DEFAULT_UUID, 1);
+    }
+
+    public void connect(String address, int channel) throws IOException {
+        connect(address, DEFAULT_UUID, channel);
+    }
+
     public void disconnect() {
         if (isConnected()) {
             connectionThread.cancel();
